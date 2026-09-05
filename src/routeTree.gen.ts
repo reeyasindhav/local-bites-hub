@@ -10,12 +10,47 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as DishesRouteImport } from './routes/dishes'
+import { Route as FeedRouteImport } from './routes/feed'
+import { Route as HelpRouteImport } from './routes/help'
+import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as SavedRouteImport } from './routes/saved'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SubmitRouteImport } from './routes/submit'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TrailsRouteImport } from './routes/trails'
+import { Route as VendorsRouteImport } from './routes/vendors'
+import { Route as DishesSlugRouteImport } from './routes/dishes.$slug'
 import { Route as StallsIdRouteImport } from './routes/stalls.$id'
+import { Route as TrailsIndexRouteImport } from './routes/trails.index'
+import { Route as TrailsSlugRouteImport } from './routes/trails.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -23,39 +58,269 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DishesRoute = DishesRouteImport.update({
+  id: '/dishes',
+  path: '/dishes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedRoute = FeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardRoute = LeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubmitRoute = SubmitRouteImport.update({
+  id: '/submit',
+  path: '/submit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrailsRoute = TrailsRouteImport.update({
+  id: '/trails',
+  path: '/trails',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VendorsRoute = VendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DishesSlugRoute = DishesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => DishesRoute,
+} as any)
 const StallsIdRoute = StallsIdRouteImport.update({
   id: '/stalls/$id',
   path: '/stalls/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrailsIndexRoute = TrailsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TrailsRoute,
+} as any)
+const TrailsSlugRoute = TrailsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => TrailsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
+  '/dishes': typeof DishesRouteWithChildren
+  '/feed': typeof FeedRoute
+  '/help': typeof HelpRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
+  '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
+  '/saved': typeof SavedRoute
+  '/signup': typeof SignupRoute
+  '/submit': typeof SubmitRoute
+  '/terms': typeof TermsRoute
+  '/trails': typeof TrailsRouteWithChildren
+  '/vendors': typeof VendorsRoute
+  '/dishes/$slug': typeof DishesSlugRoute
   '/stalls/$id': typeof StallsIdRoute
+  '/trails/$slug': typeof TrailsSlugRoute
+  '/trails/': typeof TrailsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
+  '/dishes': typeof DishesRouteWithChildren
+  '/feed': typeof FeedRoute
+  '/help': typeof HelpRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
+  '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
+  '/saved': typeof SavedRoute
+  '/signup': typeof SignupRoute
+  '/submit': typeof SubmitRoute
+  '/terms': typeof TermsRoute
+  '/vendors': typeof VendorsRoute
+  '/dishes/$slug': typeof DishesSlugRoute
   '/stalls/$id': typeof StallsIdRoute
+  '/trails/$slug': typeof TrailsSlugRoute
+  '/trails': typeof TrailsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
+  '/dishes': typeof DishesRouteWithChildren
+  '/feed': typeof FeedRoute
+  '/help': typeof HelpRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/login': typeof LoginRoute
+  '/notifications': typeof NotificationsRoute
+  '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
+  '/saved': typeof SavedRoute
+  '/signup': typeof SignupRoute
+  '/submit': typeof SubmitRoute
+  '/terms': typeof TermsRoute
+  '/trails': typeof TrailsRouteWithChildren
+  '/vendors': typeof VendorsRoute
+  '/dishes/$slug': typeof DishesSlugRoute
   '/stalls/$id': typeof StallsIdRoute
+  '/trails/$slug': typeof TrailsSlugRoute
+  '/trails/': typeof TrailsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/discover' | '/stalls/$id'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/discover'
+    | '/dishes'
+    | '/feed'
+    | '/help'
+    | '/leaderboard'
+    | '/login'
+    | '/notifications'
+    | '/privacy'
+    | '/profile'
+    | '/saved'
+    | '/signup'
+    | '/submit'
+    | '/terms'
+    | '/trails'
+    | '/vendors'
+    | '/dishes/$slug'
+    | '/stalls/$id'
+    | '/trails/$slug'
+    | '/trails/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/discover' | '/stalls/$id'
-  id: '__root__' | '/' | '/discover' | '/stalls/$id'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/discover'
+    | '/dishes'
+    | '/feed'
+    | '/help'
+    | '/leaderboard'
+    | '/login'
+    | '/notifications'
+    | '/privacy'
+    | '/profile'
+    | '/saved'
+    | '/signup'
+    | '/submit'
+    | '/terms'
+    | '/vendors'
+    | '/dishes/$slug'
+    | '/stalls/$id'
+    | '/trails/$slug'
+    | '/trails'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/dashboard'
+    | '/discover'
+    | '/dishes'
+    | '/feed'
+    | '/help'
+    | '/leaderboard'
+    | '/login'
+    | '/notifications'
+    | '/privacy'
+    | '/profile'
+    | '/saved'
+    | '/signup'
+    | '/submit'
+    | '/terms'
+    | '/trails'
+    | '/vendors'
+    | '/dishes/$slug'
+    | '/stalls/$id'
+    | '/trails/$slug'
+    | '/trails/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRoute
   DiscoverRoute: typeof DiscoverRoute
+  DishesRoute: typeof DishesRouteWithChildren
+  FeedRoute: typeof FeedRoute
+  HelpRoute: typeof HelpRoute
+  LeaderboardRoute: typeof LeaderboardRoute
+  LoginRoute: typeof LoginRoute
+  NotificationsRoute: typeof NotificationsRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ProfileRoute: typeof ProfileRoute
+  SavedRoute: typeof SavedRoute
+  SignupRoute: typeof SignupRoute
+  SubmitRoute: typeof SubmitRoute
+  TermsRoute: typeof TermsRoute
+  TrailsRoute: typeof TrailsRouteWithChildren
+  VendorsRoute: typeof VendorsRoute
   StallsIdRoute: typeof StallsIdRoute
 }
 
@@ -68,12 +333,138 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover': {
       id: '/discover'
       path: '/discover'
       fullPath: '/discover'
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/dishes': {
+      id: '/dishes'
+      path: '/dishes'
+      fullPath: '/dishes'
+      preLoaderRoute: typeof DishesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feed': {
+      id: '/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof FeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboard': {
+      id: '/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof LeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/submit': {
+      id: '/submit'
+      path: '/submit'
+      fullPath: '/submit'
+      preLoaderRoute: typeof SubmitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trails': {
+      id: '/trails'
+      path: '/trails'
+      fullPath: '/trails'
+      preLoaderRoute: typeof TrailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vendors': {
+      id: '/vendors'
+      path: '/vendors'
+      fullPath: '/vendors'
+      preLoaderRoute: typeof VendorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dishes/$slug': {
+      id: '/dishes/$slug'
+      path: '/$slug'
+      fullPath: '/dishes/$slug'
+      preLoaderRoute: typeof DishesSlugRouteImport
+      parentRoute: typeof DishesRoute
     }
     '/stalls/$id': {
       id: '/stalls/$id'
@@ -82,12 +473,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StallsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trails/': {
+      id: '/trails/'
+      path: '/'
+      fullPath: '/trails/'
+      preLoaderRoute: typeof TrailsIndexRouteImport
+      parentRoute: typeof TrailsRoute
+    }
+    '/trails/$slug': {
+      id: '/trails/$slug'
+      path: '/$slug'
+      fullPath: '/trails/$slug'
+      preLoaderRoute: typeof TrailsSlugRouteImport
+      parentRoute: typeof TrailsRoute
+    }
   }
 }
 
+interface DishesRouteChildren {
+  DishesSlugRoute: typeof DishesSlugRoute
+}
+
+const DishesRouteChildren: DishesRouteChildren = {
+  DishesSlugRoute: DishesSlugRoute,
+}
+
+const DishesRouteWithChildren =
+  DishesRoute._addFileChildren(DishesRouteChildren)
+
+interface TrailsRouteChildren {
+  TrailsSlugRoute: typeof TrailsSlugRoute
+  TrailsIndexRoute: typeof TrailsIndexRoute
+}
+
+const TrailsRouteChildren: TrailsRouteChildren = {
+  TrailsSlugRoute: TrailsSlugRoute,
+  TrailsIndexRoute: TrailsIndexRoute,
+}
+
+const TrailsRouteWithChildren =
+  TrailsRoute._addFileChildren(TrailsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRoute,
   DiscoverRoute: DiscoverRoute,
+  DishesRoute: DishesRouteWithChildren,
+  FeedRoute: FeedRoute,
+  HelpRoute: HelpRoute,
+  LeaderboardRoute: LeaderboardRoute,
+  LoginRoute: LoginRoute,
+  NotificationsRoute: NotificationsRoute,
+  PrivacyRoute: PrivacyRoute,
+  ProfileRoute: ProfileRoute,
+  SavedRoute: SavedRoute,
+  SignupRoute: SignupRoute,
+  SubmitRoute: SubmitRoute,
+  TermsRoute: TermsRoute,
+  TrailsRoute: TrailsRouteWithChildren,
+  VendorsRoute: VendorsRoute,
   StallsIdRoute: StallsIdRoute,
 }
 export const routeTree = rootRouteImport

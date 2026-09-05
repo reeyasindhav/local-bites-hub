@@ -139,7 +139,7 @@ export function StallCard({ stall, index = 0 }: { stall: Stall; index?: number }
   const isSaved = saved.includes(stall.id);
   return (
     <Reveal delay={index * 80}>
-      <article className="ink-border shadow-hard lift group h-full bg-card">
+      <article className="ink-border shadow-hard lift group h-full bg-card text-foreground">
         <div className="relative overflow-hidden border-b-2 border-ink">
           <Photo
             src={stall.photo}
@@ -192,11 +192,98 @@ export function StallCard({ stall, index = 0 }: { stall: Stall; index?: number }
   );
 }
 
+/* ---------- dialogs ---------- */
+
+export function ConfirmDialog({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  body,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  tone = "chilli",
+}: {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  body: ReactNode;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  tone?: "chilli" | "ink";
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  const confirmTone = tone === "chilli" ? "bg-chilli text-cream" : "bg-ink text-cream";
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-title"
+      className="fixed inset-0 z-[100] grid place-items-center px-4"
+    >
+      <button
+        aria-label="Close"
+        onClick={onClose}
+        className="absolute inset-0 bg-ink/60 backdrop-blur-sm"
+      />
+      <div className="ink-border animate-pop relative w-full max-w-md bg-cream p-6 shadow-hard-lg md:p-8">
+        <div className="flex items-start gap-4">
+          <span className="ink-border grid size-12 shrink-0 place-items-center rounded-full bg-chilli text-2xl text-cream">
+            ⚠️
+          </span>
+          <div className="flex-1">
+            <h2 id="confirm-title" className="text-3xl">
+              {title}
+            </h2>
+            <div className="mt-2 text-sm text-muted-foreground">{body}</div>
+          </div>
+        </div>
+        <div className="mt-6 flex flex-wrap justify-end gap-2">
+          <button
+            onClick={onClose}
+            className="eyebrow ink-border bg-cream px-4 py-3 shadow-hard-sm lift"
+          >
+            {cancelLabel}
+          </button>
+          <button
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+            className={`eyebrow ink-border ${confirmTone} px-4 py-3 shadow-hard-sm lift`}
+          >
+            {confirmLabel} →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- header / footer ---------- */
 
 const nav = [
   { to: "/discover", label: "Discover" },
   { to: "/trails", label: "Food trails" },
+  { to: "/dishes", label: "Dishes" },
+  { to: "/feed", label: "Feed" },
+  { to: "/leaderboard", label: "Top 10" },
   { to: "/vendors", label: "For vendors" },
 ];
 
@@ -204,24 +291,10 @@ export function SiteHeader() {
   const { user, signOut } = useAuth();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="overflow-hidden border-b-2 border-ink bg-ink py-1.5 text-cream">
-        <div className="animate-marquee flex w-max gap-10 whitespace-nowrap">
-          {Array.from({ length: 2 }).map((_, i) => (
-            <span key={i} className="eyebrow flex gap-10">
-              <span>Localbites, big stories</span>
-              <span>A community guide to India's best street food</span>
-              <span>Est. 2024 · 6 cities · 1,240 stalls mapped</span>
-              <span>Localbites, big stories</span>
-              <span>A community guide to India's best street food</span>
-              <span>Est. 2024 · 6 cities · 1,240 stalls mapped</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
       <div className="border-b-2 border-ink bg-cream">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3">
           <Link to="/" className="flex items-center gap-2">
@@ -249,14 +322,24 @@ export function SiteHeader() {
           <div className="hidden items-center gap-2 md:flex">
             {user ? (
               <>
+                <Link
+                  to="/notifications"
+                  aria-label="Notifications"
+                  className="ink-border relative grid size-9 place-items-center bg-cream shadow-hard-sm lift"
+                >
+                  <span aria-hidden>🔔</span>
+                  <span className="ink-border absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full bg-chilli text-[10px] font-bold text-cream">
+                    3
+                  </span>
+                </Link>
+                <Link to="/profile" className="eyebrow px-2 py-2 hover:text-chilli">
+                  Profile
+                </Link>
                 <Link to="/dashboard" className="eyebrow ink-border bg-turmeric px-3 py-2 shadow-hard-sm lift">
                   {user.name.split(" ")[0]}'s feed
                 </Link>
                 <button
-                  onClick={() => {
-                    signOut();
-                    router.navigate({ to: "/" });
-                  }}
+                  onClick={() => setSignOutOpen(true)}
                   className="eyebrow px-2 py-2 text-muted-foreground hover:text-chilli"
                 >
                   Sign out
@@ -295,10 +378,44 @@ export function SiteHeader() {
               <Link to={user ? "/saved" : "/signup"} onClick={() => setOpen(false)} className="eyebrow">
                 {user ? "Saved stalls" : "Sign up"}
               </Link>
+              {user && (
+                <Link to="/notifications" onClick={() => setOpen(false)} className="eyebrow">
+                  Notifications
+                </Link>
+              )}
+              {user && (
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    setSignOutOpen(true);
+                  }}
+                  className="eyebrow text-left text-muted-foreground"
+                >
+                  Sign out
+                </button>
+              )}
             </div>
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={signOutOpen}
+        onClose={() => setSignOutOpen(false)}
+        onConfirm={() => {
+          signOut();
+          router.navigate({ to: "/" });
+        }}
+        title="Sign out of Localbite?"
+        body={
+          <>
+            Your saved stalls will stay on this device, but you'll need to sign back in to sync them
+            to your account and post reviews.
+          </>
+        }
+        confirmLabel="Sign out"
+        cancelLabel="Stay in"
+      />
     </header>
   );
 }
@@ -315,25 +432,174 @@ export function SiteFooter() {
           <InkButton to="/submit">List your stall →</InkButton>
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-6 px-5 py-8">
-        <Link to="/" className="font-display text-2xl">
-          localbite<span className="text-chilli">.</span>
-        </Link>
-        <div className="flex flex-wrap gap-6">
-          <Link to="/discover" className="eyebrow hover:text-chilli">
-            Discover
+
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div>
+          <Link to="/" className="flex items-center gap-2">
+            <span className="ink-border grid size-9 place-items-center rounded-full bg-chilli text-base">
+              🍜
+            </span>
+            <span className="font-display text-2xl tracking-tight">
+              localbite<span className="text-chilli">.</span>
+            </span>
           </Link>
-          <Link to="/trails" className="eyebrow hover:text-chilli">
-            Trails
-          </Link>
-          <Link to="/submit" className="eyebrow hover:text-chilli">
-            List a stall
-          </Link>
-          <Link to="/vendors" className="eyebrow hover:text-chilli">
-            For vendors
-          </Link>
+          <p className="mt-4 max-w-xs text-sm text-muted-foreground">
+            A community guide to India's best street food — stalls, trails and dishes, mapped by the
+            people who actually eat there.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Link
+              to="/discover"
+              className="eyebrow ink-border bg-ink px-3 py-2 text-cream shadow-hard-sm lift"
+            >
+              Start exploring →
+            </Link>
+            <Link
+              to="/feed"
+              className="eyebrow ink-border bg-cream px-3 py-2 shadow-hard-sm lift"
+            >
+              Community
+            </Link>
+          </div>
+
+          <div className="mt-6">
+            <p className="eyebrow text-muted-foreground">Follow the cart</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <a
+                href="#"
+                aria-label="Instagram"
+                className="ink-border grid size-10 place-items-center bg-cream shadow-hard-sm lift hover:bg-chilli hover:text-cream"
+              >
+                <span aria-hidden>📷</span>
+              </a>
+              <a
+                href="#"
+                aria-label="Twitter"
+                className="ink-border grid size-10 place-items-center bg-cream shadow-hard-sm lift hover:bg-cobalt hover:text-cream"
+              >
+                <span aria-hidden>🐦</span>
+              </a>
+              <a
+                href="#"
+                aria-label="YouTube"
+                className="ink-border grid size-10 place-items-center bg-cream shadow-hard-sm lift hover:bg-chilli hover:text-cream"
+              >
+                <span aria-hidden>▶️</span>
+              </a>
+              <a
+                href="#"
+                aria-label="WhatsApp"
+                className="ink-border grid size-10 place-items-center bg-cream shadow-hard-sm lift hover:bg-turmeric"
+              >
+                <span aria-hidden>💬</span>
+              </a>
+            </div>
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground">Made for hungry locals · © 2026 Localbite</p>
+
+        <div>
+          <p className="eyebrow text-chilli">Explore</p>
+          <ul className="mt-4 space-y-3 text-sm">
+            <li><Link to="/discover" className="border-b-2 border-transparent hover:border-chilli">Discover stalls</Link></li>
+            <li><Link to="/trails" className="border-b-2 border-transparent hover:border-chilli">Food trails</Link></li>
+            <li><Link to="/dishes" className="border-b-2 border-transparent hover:border-chilli">Dishes A–Z</Link></li>
+            <li><Link to="/feed" className="border-b-2 border-transparent hover:border-chilli">Community feed</Link></li>
+            <li><Link to="/leaderboard" className="border-b-2 border-transparent hover:border-chilli">Top 10 this week</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <p className="eyebrow text-chilli">For locals</p>
+          <ul className="mt-4 space-y-3 text-sm">
+            <li><Link to="/dashboard" className="border-b-2 border-transparent hover:border-chilli">Your dashboard</Link></li>
+            <li><Link to="/saved" className="border-b-2 border-transparent hover:border-chilli">Saved stalls</Link></li>
+            <li><Link to="/notifications" className="border-b-2 border-transparent hover:border-chilli">Notifications</Link></li>
+            <li><Link to="/profile" className="border-b-2 border-transparent hover:border-chilli">Your profile</Link></li>
+            <li><Link to="/signup" className="border-b-2 border-transparent hover:border-chilli">Create an account</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <p className="eyebrow text-chilli">For vendors</p>
+          <ul className="mt-4 space-y-3 text-sm">
+            <li><Link to="/submit" className="border-b-2 border-transparent hover:border-chilli">List your stall</Link></li>
+            <li><Link to="/vendors" className="border-b-2 border-transparent hover:border-chilli">Vendor programme</Link></li>
+            <li><Link to="/about" className="border-b-2 border-transparent hover:border-chilli">About us</Link></li>
+            <li><Link to="/contact" className="border-b-2 border-transparent hover:border-chilli">Contact</Link></li>
+            <li><Link to="/help" className="border-b-2 border-transparent hover:border-chilli">Help & FAQs</Link></li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="border-t-2 border-ink bg-card">
+        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-10 md:grid-cols-[1.2fr_1fr] md:items-center">
+          <div>
+            <p className="eyebrow text-muted-foreground">The Friday digest</p>
+            <h3 className="mt-2 text-2xl md:text-3xl">One email. Five stalls. Friday morning.</h3>
+            <p className="mt-2 max-w-md text-sm text-muted-foreground">
+              Hand-picked stalls, a fresh trail and the queue report from your city. No noise.
+            </p>
+          </div>
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex flex-col gap-2 sm:flex-row"
+          >
+            <label htmlFor="footer-email" className="sr-only">
+              Email
+            </label>
+            <input
+              id="footer-email"
+              type="email"
+              required
+              placeholder="you@localbite.in"
+              className="ink-border flex-1 bg-background px-4 py-3 text-base shadow-hard-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-chilli"
+            />
+            <button
+              type="submit"
+              className="eyebrow ink-border bg-ink px-5 py-3 text-cream shadow-hard-sm lift"
+            >
+              Subscribe →
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div className="border-t-2 border-ink">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-6 text-xs text-muted-foreground">
+          <p>© 2026 Localbite · Made for hungry locals across 6 cities.</p>
+          <div className="flex flex-wrap gap-5">
+            <Link to="/privacy" className="border-b-2 border-transparent hover:border-ink hover:text-foreground">
+              Privacy
+            </Link>
+            <Link to="/terms" className="border-b-2 border-transparent hover:border-ink hover:text-foreground">
+              Terms
+            </Link>
+            <Link to="/about" className="border-b-2 border-transparent hover:border-ink hover:text-foreground">
+              About
+            </Link>
+            <Link to="/help" className="border-b-2 border-transparent hover:border-ink hover:text-foreground">
+              Help
+            </Link>
+            <Link to="/contact" className="border-b-2 border-transparent hover:border-ink hover:text-foreground">
+              Contact
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden border-t-2 border-ink bg-ink py-1.5 text-cream">
+        <div className="animate-marquee flex w-max gap-10 whitespace-nowrap">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <span key={i} className="eyebrow flex gap-10">
+              <span>Localbites, big stories</span>
+              <span>A community guide to India's best street food</span>
+              <span>Est. 2024 · 6 cities · 1,240 stalls mapped</span>
+              <span>Localbites, big stories</span>
+              <span>A community guide to India's best street food</span>
+              <span>Est. 2024 · 6 cities · 1,240 stalls mapped</span>
+            </span>
+          ))}
+        </div>
       </div>
     </footer>
   );
